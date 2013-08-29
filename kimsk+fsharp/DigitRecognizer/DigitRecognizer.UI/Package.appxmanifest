@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
+  <Identity Name="f6260d6f-0681-4efa-bdcb-9e7754f16510" Publisher="CN=Karlkim" Version="1.0.0.0" />
+  <Properties>
+    <DisplayName>DigitRecognizer.UI</DisplayName>
+    <PublisherDisplayName>Karlkim</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+  <Prerequisites>
+    <OSMinVersion>6.2.1</OSMinVersion>
+    <OSMaxVersionTested>6.2.1</OSMaxVersionTested>
+  </Prerequisites>
+  <Resources>
+    <Resource Language="x-generate" />
+  </Resources>
+  <Applications>
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="DigitRecognizer.UI.App">
+      <VisualElements DisplayName="DigitRecognizer.UI" Logo="Assets\Logo.png" SmallLogo="Assets\SmallLogo.png" Description="DigitRecognizer.UI" ForegroundText="light" BackgroundColor="#464646">
+        <DefaultTile ShowName="allLogos" />
+        <SplashScreen Image="Assets\SplashScreen.jpg" BackgroundColor="white" />
+      </VisualElements>
+    </Application>
+  </Applications>
+  <Capabilities>
+    <Capability Name="internetClient" />
+  </Capabilities>
+</Package>
