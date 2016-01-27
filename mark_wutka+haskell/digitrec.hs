@@ -25,10 +25,10 @@ loadData filename = do
     return (map parseLine (tail (lines filedata)))
 
 -- Compares two lists of pixels by summing the squares of the differences
--- Returns a pair containing the test sample digit and its score
+-- Returns a pair containing the training sample digit and its score
 compareSamples :: [Int] -> [Int] -> (Int,Int)
-compareSamples trainingSample testSample =
-  (head testSample,
+compareSamples testSample trainingSample =
+  (head trainingSample,
     sum $ zipWith comparePixels (tail testSample) (tail trainingSample))
       where
         comparePixels p1 p2 = sqr (p1 - p2)
@@ -36,18 +36,18 @@ compareSamples trainingSample testSample =
 
 -- Finds the closes match by looking for the one with the minimum score
 recognizeSample :: [Int] -> [[Int]] -> (Int,Int)
-recognizeSample trainingSample testSamples =
-  minimumBy compareScores (map (compareSamples trainingSample) testSamples)
+recognizeSample testSample trainingSamples =
+  minimumBy compareScores (map (compareSamples testSample) trainingSamples)
     where
       compareScores (d1,s1) (d2,s2) = compare s1 s2 
 
 -- Returns true if the recognizer recognized the correct digit
 sampleMatches :: [[Int]] -> [Int] -> Bool
-sampleMatches testSamples trainingSample =
-    head trainingSample == fst (recognizeSample trainingSample testSamples)
+sampleMatches trainingSamples testSample =
+    head testSample == fst (recognizeSample testSample trainingSamples)
 
 main = do
-  -- Get the command line argumentsw
+  -- Get the command line arguments
   argv <- getArgs
   let [testfile,trainingfile] = take 2 argv
 

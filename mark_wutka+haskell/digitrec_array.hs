@@ -36,7 +36,7 @@ loadData filename = do
 -- Returns a pair containing the test sample digit and its score
 compareSamples :: UArray Int Int -> UArray Int Int -> (Int,Int)
 compareSamples trainingSample testSample =
-  (testSample ! 0,
+  (trainingSample ! 0,
     sum $ map comparePixels (tail (indices trainingSample)))
       where
         comparePixels i = sqr((trainingSample ! i) - (testSample ! i))
@@ -44,15 +44,15 @@ compareSamples trainingSample testSample =
 
 -- Finds the closes match by looking for the one with the minimum score
 recognizeSample :: UArray Int Int -> [UArray Int Int] -> (Int,Int)
-recognizeSample trainingSample testSamples =
-  minimumBy compareScores (map (compareSamples trainingSample) testSamples)
+recognizeSample testSample trainingSamples =
+  minimumBy compareScores (map (compareSamples testSample) trainingSamples)
     where
       compareScores (d1,s1) (d2,s2) = compare s1 s2
 
 -- Returns true if the recognizer recognized the correct digit
 sampleMatches :: [UArray Int Int] -> UArray Int Int -> Bool
-sampleMatches testSamples trainingSample =
-    trainingSample ! 0 == fst (recognizeSample trainingSample testSamples)
+sampleMatches trainingSamples testSample =
+    testSample ! 0 == fst (recognizeSample testSample trainingSamples)
 
 main = do
   -- Get the command line argumentsw
