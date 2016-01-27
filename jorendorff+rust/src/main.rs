@@ -18,14 +18,42 @@ fn distance(training_pixels: &[u8], test_pixels: &[u8]) -> u64 {
         .sum()
 }
 
-fn predict(training_data: &Vec<Observation>, test_pixels: &[u8]) -> u8 {
+fn display_pixel(i: u8) -> char {
+    match i {
+        0 ... 10 => ' ',
+        11 ... 64 => '.',
+        65 ... 160 => ':',
+        161 ... 255 => '#',
+        _ => unreachable!("u8")
+    }
+}
+
+fn display_miss(test: &Observation, best: &Observation) {
+    assert_eq!(test.pixels.len(), best.pixels.len());
+    println!("Test case ({}):                  Best match ({}):", test.label, best.label);
+    for r in 0 .. 28 {
+        let mut s = String::new();
+        for c in 0 .. 28 {
+            s.push(display_pixel(test.pixels[r * 28 + c]));
+        }
+        for _ in 0 .. 4 {
+            s.push(' ');
+        }
+        for c in 0 .. 28 {
+            s.push(display_pixel(best.pixels[r * 28 + c]));
+        }
+        println!("{}", s);
+    }
+    println!("");
+}
+
+fn predict<'a, 'b>(training_data: &'a Vec<Observation>, test_pixels: &'b [u8]) -> &'a Observation {
     training_data
         .iter()
         .map(|obs| (obs, distance(&obs.pixels, test_pixels)))
         .min_by_key(|pair| pair.1)
         .unwrap()
         .0
-        .label
 }
 
 fn read_csv_file(filename: &Path) -> io::Result<Vec<Observation>> {
@@ -53,9 +81,12 @@ fn fallible_main() -> io::Result<f64> {
     let test_data = try!(read_csv_file(&PathBuf::from("../test-sample.csv")));
     let mut passed = 0;
     let mut total = 0;
-    for obs in test_data {
-        if predict(&training_data, &obs.pixels) == obs.label {
+    for test_case in test_data {
+        let best_match = predict(&training_data, &test_case.pixels);
+        if best_match.label == test_case.label {
             passed += 1;
+        } else {
+            display_miss(&test_case, best_match);
         }
         total += 1;
     }
