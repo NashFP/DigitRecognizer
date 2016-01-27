@@ -1,5 +1,6 @@
 import System.Environment (getArgs)
 import Data.List
+import Data.Array.Base
 import Data.Array.Unboxed
 import Data.Ord (compare)
 
@@ -35,12 +36,25 @@ loadData filename = do
 -- Compares two lists of pixels by summing the squares of the differences
 -- Returns a pair containing the test sample digit and its score
 compareSamples :: UArray Int Int -> UArray Int Int -> (Int,Int)
-compareSamples trainingSample testSample =
+compareSamples testSample trainingSample =
   (trainingSample ! 0,
     sum $ map comparePixels (tail (indices trainingSample)))
       where
-        comparePixels i = sqr((trainingSample ! i) - (testSample ! i))
+        comparePixels i = sqr((unsafeAt trainingSample i) - (unsafeAt testSample i))
         sqr x = x * x
+
+-- compareSamples2 tries to iterate recursively instead of using built-in functions
+compareSamples2' :: Int -> Int -> Int -> UArray Int Int -> UArray Int Int -> (Int,Int)
+compareSamples2' i end sum testSample trainingSample =
+    if i == end then
+        (trainingSample ! 0, sum)
+    else
+        compareSamples2' (i+1) end (sum + sqr ((unsafeAt trainingSample i) - (unsafeAt testSample i))) testSample trainingSample
+            where
+              sqr x = x * x
+
+compareSamples2 testSample trainingSample =
+    compareSamples2' 1 ((snd (bounds trainingSample)) + 1) 0 testSample trainingSample
 
 -- Finds the closes match by looking for the one with the minimum score
 recognizeSample :: UArray Int Int -> [UArray Int Int] -> (Int,Int)
