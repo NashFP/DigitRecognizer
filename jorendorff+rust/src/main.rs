@@ -16,13 +16,13 @@ fn distance(training_pixels: &[u8], test_pixels: &[u8]) -> u64 {
         .fold(0, |a, b| a + b)
 }
 
-fn display_pixel(i: u8) -> char {
-    match i {
+fn display_pixel(x: u8) -> char {
+    match x {
         0 ... 10 => ' ',
         11 ... 64 => '.',
         65 ... 160 => ':',
         161 ... 255 => '#',
-        _ => unreachable!("u8")
+        _ => unreachable!("i have discovered an exciting new u8 value: {}", x)
     }
 }
 
