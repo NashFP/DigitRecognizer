@@ -1,5 +1,3 @@
-#![feature(iter_arith)]
-
 use std::path::{Path, PathBuf};
 use std::fs::File;
 use std::io;
@@ -14,8 +12,8 @@ fn distance(training_pixels: &[u8], test_pixels: &[u8]) -> u64 {
     training_pixels
         .iter()
         .zip(test_pixels)
-        .map(|(&a, &b)| (a as i64 - b as i64).abs() as u64)
-        .sum()
+        .map(|(&a, &b)| (a as i32 - b as i32).abs() as u64)
+        .fold(0, |a, b| a + b)
 }
 
 fn display_pixel(i: u8) -> char {
