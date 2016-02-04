@@ -43,7 +43,7 @@ fn distance(training_pixels: &[u8], test_pixels: &[u8]) -> u64 {
     training_pixels
         .iter()
         .zip(test_pixels)
-        .map(|(&a, &b)| (a as i32 - b as i32).abs() as u64)
+        .map(|(a, b)| (*a as i32 - *b as i32).abs() as u64)
         .fold(0, |a, b| a + b)
 }
 
@@ -60,9 +60,8 @@ fn read_csv_file(filename: &str) -> io::Result<Vec<Observation>> {
     let f = try!(File::open(filename));
     let mut reader = BufReader::new(f);
 
-    // Discard the first line.
     let mut line = String::new();
-    try!(reader.read_line(&mut line));
+    try!(reader.read_line(&mut line));      // Discard the first line.
 
     let mut v = vec![];
     for line in reader.lines() {
@@ -94,7 +93,7 @@ fn fallible_main() -> io::Result<f64> {
 
 fn main() {
     match fallible_main() {
-        Ok(result) => println!("{}", result),
+        Ok(result) => println!("{}% correct", result),
         Err(err) => println!("{}", err)
     }
 }
